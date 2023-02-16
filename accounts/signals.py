@@ -1,10 +1,14 @@
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save, pre_save  # noqa
 from django.dispatch import receiver
 from .models import User, UserProfile
 
 
 @receiver(post_save, sender=User)
 def post_save_create_profile_receiver(sender, instance, created, **kwargs):
+    """Create a user profile when a user is created.
+
+    This signal is also used for already existing users without a profile.
+    """
     if created:
         UserProfile.objects.create(user=instance)
     else:
